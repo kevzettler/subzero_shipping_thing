@@ -18,7 +18,7 @@ The majority of business logic is in the [db](./db) directory. The requested `as
 
 The database is prepopulated with some `pharmacy`, `drugs`, `inventory_item` and `order_item` records. You can find the seed data in `db/src/sample_data/data.sql`
 
-The `assign` function utilizes a database view [min_cost_inventory_items.sql](db/src/api/min_cost_inventory_items.sql) to derive the lowest cost drugs at each pharmacy.
+The `assign` function utilizes a database view [min_cost_inventory_items.sql](db/src/api/min_cost_inventory_items.sql) to derive the lowest cost drugs at each pharmacy.q
 
 
 The `assign` function can be utilized with the following curl command:
@@ -36,7 +36,7 @@ http://localhost:8080/rest/rpc/assign
 curl -s -X POST \
      -H "Content-Type: application/json" \
      -H "Accept: application/vnd.pgrst.object+json" \
--d '{"destination": "WI", "items": [{"quantity": 9, "drug_id": 5},{"quantity": 9, "drug_id": 3},{"quantity": 9, "drug_id": 2}]}' \
+-d '{"destination": "WI", "items": [{"quantity": 9, "drug_id": 5},{"quantity": 9, "drug_id": 3},{"quantity": 9, "drug_id":1}]}' \
 http://localhost:8080/rest/rpc/assign
 
 curl -s -X POST \

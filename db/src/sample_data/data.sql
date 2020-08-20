@@ -30,12 +30,12 @@ COPY drug (id,name) FROM STDIN (FREEZE ON);
 6	drug_6_6_6_6_6_6_6_6_6_6_6_6_
 \.
 -- fill table order_item (9)
-\echo # filling table order_item (9)
-COPY order_item (id,order_id,quantity,drug_id) FROM STDIN (FREEZE ON);
-1	1	9	5
-2	1	10	3
-3	1	4	1
-\.
+-- \echo # filling table order_item (9)
+-- COPY order_item (id,order_id,quantity,drug_id) FROM STDIN (FREEZE ON);
+-- 1	1	9	5
+-- 2	1	10	3
+-- 3	1	4	1
+-- \.
 --
 -- fill table pharmacy (4)
 \echo # filling table pharmacy (4)

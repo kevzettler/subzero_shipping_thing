@@ -23,7 +23,7 @@ create or replace function assign(_order_id int) returns jsonb as $$
 declare
     order_destination text;
     json_result jsonb;
-    possible_locations int;
+    drug_row record;
 begin
    select into order_destination
      data.order.destination
@@ -51,23 +51,28 @@ begin
        from drugs_for_order
     group by drug_id, location;
 
+   create temp table cheapest_drugs_for_order as
+    select distinct on (drug_id, min(total_cost))
+    drug_id, min_cost, shipping_cost, min(total_cost)
+    from drugs_with_costs
+    group by drug_id;
 
-create temp table drugs_by_location as
-select *
-from ( -- sub
-  select
-    array_agg(location) as locations,
-    array_agg(drug_id) as drug_ids,
-    sum(min_cost) as combined_cost,
-    (api.hex_to_decimal(MD5('WI' || location )) % 1000) as shipping_cost,
-    ((api.hex_to_decimal(MD5('WI' || location )) % 1000) + sum(min_cost)) as total_cost
-  from drugs_with_costs
-  group by location
-) as drug_location_agg
-where array_length(drug_ids, 1) > 1;
-   --select into possible_locations count(distinct location) from cheapest_drugs;
 
-   select into json_result jsonb_agg(to_jsonb(cheapest_drugs)) from cheapest_drugs;
+   create temp table other_drugs as
+    select * from cheapest_drugs_for_order as cheap
+   right join drugs_with_costs as whole
+     on cheap.location = whole.location
+       and cheap.drug_id = whole.drug_id;
+
+
+   for drug_row in select * from other_drugs loop
+       select * from cheapest_drugs_for_order where drug_id = drug_row.id;
+
+   end loop;
+
+-- iterate over other drugs and see if they can replace a current drug with cheaper shipping cost
+
+   select into json_result jsonb_agg(to_jsonb(cheapest_drugs_for_order)) from cheapest_drugs_for_order;
 
 
    return json_result;
